@@ -1,0 +1,11 @@
+# Photo Organizer GUI Application
+# This application uses only Python standard library modules
+# No additional packages required
+
+# Required Python version: 3.6+
+# The following modules are part of Python standard library:
+# - tkinter (GUI framework)
+# - os (operating system interface)
+# - shutil (high-level file operations)
+# - pathlib (object-oriented filesystem paths)
+# - threading (threading support)

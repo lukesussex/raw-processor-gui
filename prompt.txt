@@ -1,0 +1,10 @@
+please create a python gui application where I can select a directory of photos (both .jpg and .cr2 raw file) and a run mode. 
+the run modes are
+1. organize photos
+2. tidy photos
+
+For run mode "organize photos" I want you to move all .cr2 files into a new folder called RAW, move all the .jpg files into a folder called JPG. then make a copy of the JPG folder called JPG - Edit 1
+
+The user should then be instructed it is time to edit the images in the JPG - Edit 1 folder. 
+
+Once the user has edited the photos, they come back to the tool and select the second "tidy photos" mode. When this runs, the program should go through the RAW folder and only keep .cr2 raw files where there exists a .jpg equivalent (same name, just different extension) file in the JPG - Edit 1 folder. 
