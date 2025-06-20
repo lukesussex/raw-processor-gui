@@ -8,10 +8,10 @@ Changelog Categories:
 - "Fixed" for any bug fixes.
 -->
 
-## [1.0.0] - 2025-06-20
+## [0.1.0] - 2025-06-20
 
 ### Added
-- **Initial Release**: The first version of the Photo Organizer & Tidier application.
+- **Initial Beta Release**: The first version of the Photo Organizer & Tidier application.
 - **Core Functionality**:
     - GUI for selecting a directory and a processing mode (`Organize` or `Tidy`).
     - **Organize Photos Mode**: Sorts `.cr2` and `.jpg` files into `RAW` and `JPG` subdirectories and creates a `JPG - Edit 1` copy for editing.

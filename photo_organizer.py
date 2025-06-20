@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-import os
 import shutil
 from pathlib import Path
 import threading
 import logging
-from datetime import datetime
+
+# Version information
+VERSION = "0.1.0"
 
 class PhotoOrganizerApp:
     def __init__(self, root):
@@ -35,7 +36,8 @@ class PhotoOrganizerApp:
             self.logger.removeHandler(handler)
 
         # Create formatter
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s',
+                                     datefmt='%Y-%m-%d %H:%M:%S')
 
         # Create file handler
         log_file_path = Path(log_directory) / 'log.txt'
@@ -47,6 +49,8 @@ class PhotoOrganizerApp:
         # Add handler to logger
         self.logger.addHandler(file_handler)
 
+        # Write version information at the top of the log file
+        self.logger.info(f"Photo Organizer & Tidier v{VERSION}")
         self.logger.info(f"File logging enabled. Log file: {log_file_path}")
 
     def setup_ui(self):
