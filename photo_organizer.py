@@ -6,7 +6,20 @@ import threading
 import logging
 
 # Version information
-VERSION = "0.1.0"
+VERSION = "0.2.0"
+
+def format_file_size(size_bytes):
+    """Convert bytes to human readable format (KB, MB, GB)"""
+    if size_bytes == 0:
+        return "0 B"
+
+    size_names = ["B", "KB", "MB", "GB"]
+    i = 0
+    while size_bytes >= 1024 and i < len(size_names) - 1:
+        size_bytes /= 1024.0
+        i += 1
+
+    return f"{size_bytes:.2f} {size_names[i]}"
 
 class PhotoOrganizerApp:
     def __init__(self, root):
@@ -278,22 +291,26 @@ class PhotoOrganizerApp:
         kept_cr2 = 0
         removed_cr2 = 0
         total_cr2 = 0
+        space_saved = 0
 
         self.logger.info("Processing CR2 files in RAW folder")
         for cr2_file in raw_folder.iterdir():
             if cr2_file.is_file() and cr2_file.suffix.lower() == '.cr2':
                 total_cr2 += 1
+                file_size = cr2_file.stat().st_size
                 if cr2_file.stem in edited_jpgs:
                     kept_cr2 += 1
                     self.logger.info(f"Keeping CR2 file: {cr2_file.name} (has edited JPG)")
                 else:
                     self.logger.info(f"Removing CR2 file: {cr2_file.name} (no edited JPG)")
+                    space_saved += file_size
                     cr2_file.unlink()  # Delete the file
                     removed_cr2 += 1
 
         self.logger.info(f"CR2 file processing complete. Total CR2 files: {total_cr2}")
         self.logger.info(f"CR2 files kept: {kept_cr2}")
         self.logger.info(f"CR2 files removed: {removed_cr2}")
+        self.logger.info(f"Disk space saved: {format_file_size(space_saved)}")
 
         # Rename RAW folder to RAW - Edit 1
         raw_edit_folder = source_dir / "RAW - Edit 1"
@@ -307,6 +324,7 @@ class PhotoOrganizerApp:
         message = (f"Tidying complete!\n\n"
                   f"Kept {kept_cr2} .cr2 files (have corresponding edited .jpg)\n"
                   f"Removed {removed_cr2} .cr2 files (no corresponding edited .jpg)\n"
+                  f"Disk space saved: {format_file_size(space_saved)}\n"
                   f"Renamed RAW folder to 'RAW - Edit 1'")
 
         self.logger.info("Photo tidying completed successfully")
