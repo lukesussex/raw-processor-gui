@@ -14,8 +14,10 @@ class PhotoOrganizerApp:
         self.root.geometry("600x400")
         self.root.resizable(True, True)
 
-        # Setup logging
-        self.setup_logging()
+        # Setup a logger that does nothing until configured
+        self.logger = logging.getLogger('PhotoOrganizer')
+        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(logging.NullHandler())
 
         # Variables
         self.selected_directory = tk.StringVar()
@@ -23,26 +25,20 @@ class PhotoOrganizerApp:
 
         self.setup_ui()
 
-        # Log application startup
+        # This log message will be ignored until a file handler is configured
         self.logger.info("Photo Organizer application started")
 
-    def setup_logging(self, log_directory=None):
-        """Setup logging configuration"""
-        self.logger = logging.getLogger('PhotoOrganizer')
-        self.logger.setLevel(logging.INFO)
-
-        # Remove existing handlers to avoid duplicates
+    def setup_logging(self, log_directory):
+        """Setup logging configuration to a file."""
+        # Remove existing handlers (like NullHandler) to avoid duplicates
         for handler in self.logger.handlers[:]:
             self.logger.removeHandler(handler)
 
         # Create formatter
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-        # Create file handler - use selected directory if provided, otherwise use current directory
-        if log_directory:
-            log_file_path = Path(log_directory) / 'log.txt'
-        else:
-            log_file_path = Path('log.txt')
+        # Create file handler
+        log_file_path = Path(log_directory) / 'log.txt'
 
         file_handler = logging.FileHandler(log_file_path, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.INFO)
@@ -51,8 +47,7 @@ class PhotoOrganizerApp:
         # Add handler to logger
         self.logger.addHandler(file_handler)
 
-        # Log initial setup
-        self.logger.info(f"Logging system initialized - log file: {log_file_path}")
+        self.logger.info(f"File logging enabled. Log file: {log_file_path}")
 
     def setup_ui(self):
         # Main frame
@@ -138,8 +133,7 @@ class PhotoOrganizerApp:
         directory = filedialog.askdirectory(title="Select Photo Directory")
         if directory:
             self.selected_directory.set(directory)
-            # Reconfigure logging to use the selected directory
-            self.setup_logging(directory)
+            # Logging will be configured when an operation is run
             self.logger.info(f"Directory selected: {directory}")
         else:
             self.logger.info("Directory selection cancelled by user")
@@ -147,8 +141,10 @@ class PhotoOrganizerApp:
     def run_operation(self):
         if not self.selected_directory.get():
             messagebox.showerror("Error", "Please select a directory first!")
-            self.logger.warning("Operation attempted without directory selection")
             return
+
+        # Configure file logging now that an operation is starting
+        self.setup_logging(self.selected_directory.get())
 
         selected_mode = self.run_mode.get()
         self.logger.info(f"Starting operation: {selected_mode} mode")
@@ -184,7 +180,7 @@ class PhotoOrganizerApp:
         self.progress.stop()
         self.run_btn.config(state="normal")
         self.status_label.config(text="Ready")
-        self.logger.info("UI reset to ready state")
+        self.logger.info("UI reset to ready state\n")
 
     def organize_photos(self):
         source_dir = Path(self.selected_directory.get())
