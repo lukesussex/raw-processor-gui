@@ -314,7 +314,7 @@ class PhotoOrganizerApp:
 
 def main():
     root = tk.Tk()
-    app = PhotoOrganizerApp(root)
+    _app = PhotoOrganizerApp(root)
     root.mainloop()
 
 if __name__ == "__main__":
